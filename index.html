@@ -218,40 +218,38 @@
         }
 
                 function submitOrder() {
-            const url = "https://script.google.com/macros/s/AKfycbxEjJrLIwlJhvQ6wRHBo_e0B9jBYVrc8-IjlNG1cEzm0rGRHl7afIVs1lNmS_yRQ4GN/exec";
-            const form = document.getElementById('checkout-form');
+    const url = "https://script.google.com/macros/s/AKfycbxEjJrLIwlJhvQ6wRHBo_e0B9jBYVrc8-IjlNG1cEzm0rGRHl7afIVs1lNmS_yRQ4GN/exec";
+    const form = document.getElementById('checkout-form');
+    const formData = new FormData(form);
 
-            // Collect form data
-            const formData = new FormData(form);
-            const table = document.getElementById('order-table').getElementsByTagName('tbody')[0];
-            const rows = Array.from(table.rows);
+    const table = document.getElementById('order-table').getElementsByTagName('tbody')[0];
+    const rows = Array.from(table.rows);
 
-            // Gather dynamic order details into a JSON object
-            const orderDetails = rows.map(row => ({
-                code: row.cells[0].getElementsByTagName('input')[0].value,
-                quantity: row.cells[1].getElementsByTagName('input')[0].value
-            }));
-            formData.set("orderDetails", JSON.stringify(orderDetails)); // Convert orderDetails to JSON
+    const orderDetails = rows.map(row => ({
+        code: row.cells[0].getElementsByTagName('input')[0].value,
+        quantity: row.cells[1].getElementsByTagName('input')[0].value
+    }));
 
-            // Send data to Google Apps Script
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === "success") {
-                    alert("Order submitted successfully!");
-                    showSection('thank-you');
-                } else {
-                    alert("Failed to submit order: " + data.message);
-                }
-            })
-            .catch(error => {
-                alert("Failed to submit order. Please try again.");
-                console.error(error);
-            });
+    formData.set("orderDetails", JSON.stringify(orderDetails));
+
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.result === "success") {
+            alert("Order submitted successfully!");
+            showSection('thank-you');
+        } else {
+            alert("Failed to submit order: " + data.message);
         }
+    })
+    .catch(error => {
+        alert("Failed to submit order. Please try again.");
+        console.error(error);
+    });
+}
 
         function startNewOrder() {
             // Reset the table and form for a new order
